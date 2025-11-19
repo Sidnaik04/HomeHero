@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import List
 
-from app.models.user import User
+from app.models.user import User, UserType
 from app.schemas.user import UserCreate, UserUpdate
 from app.core.security import get_password_hash
 from app.core.validators import InputSanitizer
@@ -45,6 +45,24 @@ class UserController:
         )
 
         db.add(user)
+        db.flush()
+
+        if user_data.user_type == UserType.PROVIDER:
+            from app.models.provider import Provider
+
+            provider_profile = Provider(
+                user_id=user.id,
+                services=[],  # Empty initially, provider will update later
+                pricing=0.0,
+                availability=True,
+                approved=False,  # Needs admin approval
+                rating=0.0,
+                rating_count=0,
+                experience_years=0,
+                service_radius=10.0,
+            )
+            db.add(provider_profile)
+
         db.commit()
         db.refresh(user)
         return user

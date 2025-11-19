@@ -78,7 +78,7 @@ def create_dummy_data():
         print("👨‍💼 Creating admin user...")
         admin_user = User(
             name="HomeHero",
-            email="homeheroappsynape@gmail.com",
+            email="homehero@gmail.com",
             phone="8600980846",
             hashed_password=get_password_hash("Synape123"),
             user_type=UserType.ADMIN,
