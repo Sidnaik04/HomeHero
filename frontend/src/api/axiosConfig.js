@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Base API URL
-const API_BASE_URL = 'https://homehero-synap5e.onrender.com/api';
+// const API_BASE_URL = 'https://homehero-synap5e.onrender.com/api';
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
 
 // Create axios instance
 const axiosInstance = axios.create({

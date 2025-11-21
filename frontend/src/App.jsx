@@ -27,6 +27,9 @@ import ProviderProfile from "./pages/provider/ProviderProfile";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
+// Debug
+import ProviderDebug from "./pages/debug/ProviderDebug";
+
 function App() {
   return (
     <AuthProvider>
@@ -179,6 +182,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* Debug (development only) */}
+          <Route path="/debug/providers" element={<ProviderDebug />} />
 
           {/* Default Redirect */}
           <Route path="/" element={<Navigate to="/login" replace />} />

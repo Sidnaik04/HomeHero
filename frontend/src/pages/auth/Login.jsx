@@ -29,7 +29,8 @@ const Login = () => {
       // Now fetch user profile (to get user_type)
       const token = localStorage.getItem("access_token");
       const profileResponse = await fetch(
-        "https://homehero-synap5e.onrender.com/api/users/me",
+        // "https://homehero-synap5e.onrender.com/api/users/me",
+        "http://127.0.0.1:8000/api/users/me",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

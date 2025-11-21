@@ -11,6 +11,13 @@ import { useNavigate } from "react-router-dom";
 const ProviderCard = ({ provider }) => {
   const navigate = useNavigate();
 
+  console.log("ProviderCard Rendering:", {
+    providerId: provider?.provider_id,
+    name: provider?.user?.name,
+    services: provider?.services,
+    availability: provider?.availability,
+  });
+
   const handleBookNow = () => {
     navigate(`/customer/provider/${provider.provider_id}`, {
       state: { provider },

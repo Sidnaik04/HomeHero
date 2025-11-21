@@ -116,14 +116,39 @@ const SearchProviders = () => {
       if (filters.sort_by) params.sort_by = filters.sort_by;
       if (filters.available) params.available = true;
 
-      const data = await providersService.advancedSearch(params);
-      setProviders(data);
+      const response = await providersService.advancedSearch(params);
 
-      if (data.length === 0) {
-        toast("No providers found. Try different filters.", { icon: "🔍" });
+      console.log("✅ RAW API RESPONSE:", response);
+      console.log("📊 Response Type:", typeof response);
+      console.log("📊 Is Array?:", Array.isArray(response));
+      console.log("📊 Response Length:", response?.length);
+      console.log(
+        "📋 Provider Names:",
+        response?.map((p) => p.user?.name || p.name)
+      );
+      console.log("📋 Full Response Data:", JSON.stringify(response, null, 2));
+
+      if (!Array.isArray(response)) {
+        console.error("❌ Response is not an array!", response);
+        toast.error("Invalid response from server");
+        setProviders([]);
+        return;
       }
+
+      console.log("💾 Setting providers state with:", response.length, "items");
+      setProviders(response);
+
+      if (response.length === 0) {
+        toast("No providers found. Try different filters.", { icon: "🔍" });
+      } else {
+        toast.success(`Found ${response.length} provider(s)!`);
+      }
+
+      console.log("✅ FRONTEND SEARCH COMPLETE");
     } catch (error) {
-      console.error("Search error:", error);
+      console.error("❌ FRONTEND SEARCH ERROR:", error);
+      console.error("Error Response:", error.response);
+      console.error("Error Data:", error.response?.data);
       toast.error("Failed to search providers");
     } finally {
       setLoading(false);
