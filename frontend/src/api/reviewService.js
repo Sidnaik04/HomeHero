@@ -42,6 +42,20 @@ const reviewsService = {
       throw error.response?.data || error.message;
     }
   },
+
+  // Upload one or more images for a review. Expects multipart/form-data
+  uploadImages: async (files) => {
+    try {
+      const formData = new FormData();
+      files.forEach((file) => formData.append("files", file));
+      const response = await axiosInstance.post("/reviews/images", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 export default reviewsService;

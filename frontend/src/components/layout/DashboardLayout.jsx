@@ -34,7 +34,7 @@ const DashboardLayout = ({ children }) => {
         <footer className="bg-dark-card border-t border-dark-border py-4 px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-2">
             <p className="text-sm text-dark-muted">
-              © 2024 HomeHero. All rights reserved.
+              © 2025 HomeHero. All rights reserved.
             </p>
             <div className="flex gap-4 text-sm">
               <a

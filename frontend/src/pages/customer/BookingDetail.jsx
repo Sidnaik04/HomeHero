@@ -261,7 +261,7 @@ const BookingDetail = () => {
               </div>
             )}
 
-            {booking.status === "completed" && (
+            {booking.status === "completed" && !booking.review_submitted && (
               <div className="card bg-green-500/5 border-green-500">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                   <div>
@@ -282,6 +282,14 @@ const BookingDetail = () => {
                     Write Review
                   </Button>
                 </div>
+              </div>
+            )}
+
+            {booking.status === "completed" && booking.review_submitted && (
+              <div className="card bg-blue-500/5 border-blue-500">
+                <p className="text-center text-dark-muted">
+                  ✅ You've already reviewed this service
+                </p>
               </div>
             )}
 

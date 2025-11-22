@@ -128,7 +128,6 @@ class ProviderController:
 
     # enhanced provider search with geolocation
     @staticmethod
-    @cached(ttl=1800, key_prefix="provider_search")
     async def search_providers_with_location(
         db: Session,
         service: Optional[str] = None,
@@ -155,35 +154,40 @@ class ProviderController:
 
         providers = query.offset(skip).limit(limit).all()
 
+        # Build a lightweight list of dicts used by geo lookup (don't mutate DB objects yet)
         provider_dicts = []
         for provider in providers:
-            provider_dict = {
-                "provider_id": str(provider.provider_id),
-                "location": provider.user.location,
-                "name": provider.user.name,
-                "rating": provider.rating,
-                "services": provider.services,
-                "pricing": provider.pricing,
-                "provider_obj": provider,  # Keep reference to original object
-            }
+            provider_dicts.append(
+                {
+                    "provider_id": str(provider.provider_id),
+                    "location": provider.user.location,
+                    "name": provider.user.name,
+                    "rating": provider.rating,
+                    "services": provider.services,
+                    "pricing": provider.pricing,
+                    "provider_obj": provider,  # Keep reference to original object
+                }
+            )
 
-            provider_dicts.append(provider_dict)
+        # Apply geolocation filtering once for the full list if a location was provided
+        if location and max_distance_km:
+            provider_dicts = await geo_service.find_nearby_providers(
+                customer_location=location,
+                providers=provider_dicts,
+                max_distance_km=max_distance_km,
+            )
 
-            # Apply gelocation filtering if location provided
-            if location and max_distance_km:
-                provider_dicts = await geo_service.find_nearby_providers(
-                    customer_location=location,
-                    providers=provider_dicts,
-                    max_distance_km=max_distance_km,
-                )
+        # Convert back to original provider objects, attaching distance when available
+        result_providers = []
+        for provider_dict in provider_dicts:
+            provider_obj = provider_dict.get("provider_obj")
+            if not provider_obj:
+                continue
 
-            # return original provider objects with distance info
-            result_providers = []
-            for provider_dict in provider_dicts:
-                provider_obj = provider_dict["provider_obj"]
+            if "distance_km" in provider_dict:
+                # attach distance to the provider ORM object for downstream sorting/consumption
+                setattr(provider_obj, "distance_km", provider_dict["distance_km"])
 
-                if "distance_km" in provider_dict:
-                    provider_obj.distance_km = provider_dict["distance_km"]
-                result_providers.append(provider_obj)
+            result_providers.append(provider_obj)
 
-            return result_providers
+        return result_providers

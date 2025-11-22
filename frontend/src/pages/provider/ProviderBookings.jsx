@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Calendar, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import BookingStatusBadge from "../../components/common/BookingStatusBadge";
@@ -10,7 +9,6 @@ import { format } from "date-fns";
 import toast from "react-hot-toast";
 
 const ProviderBookings = () => {
-  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("pending");
@@ -63,6 +61,19 @@ const ProviderBookings = () => {
 
   const handleAccept = (id) => handleRespond(id, "accepted");
   const handleDecline = (id) => handleRespond(id, "declined");
+  const handleComplete = async (bookingId) => {
+    setActionLoading(bookingId);
+    try {
+      await bookingsService.completeBooking(bookingId);
+      toast.success("Service marked as completed!");
+      fetchBookings();
+    } catch (error) {
+      console.error("Complete error:", error);
+      toast.error("Failed to mark as completed");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const pendingCount = useMemo(
     () => bookings.filter((b) => b.status === "pending").length,
@@ -216,6 +227,15 @@ const ProviderBookings = () => {
                             Decline
                           </Button>
                         </div>
+                      )}
+                      {booking.status === "accepted" && (
+                        <Button
+                          variant="success"
+                          loading={actionLoading === booking.booking_id}
+                          onClick={() => handleComplete(booking.booking_id)}
+                        >
+                          Mark as Completed
+                        </Button>
                       )}
                     </div>
                   </div>

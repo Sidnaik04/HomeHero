@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import bookingsService from "../../api/bookingsService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -18,32 +19,49 @@ const CustomerDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const data = await bookingsService.getMyBookings();
+      setBookings(data);
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const stats = [
     {
       label: "Total Bookings",
-      value: "12",
+      value: bookings.length.toString(),
       icon: Calendar,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
     },
     {
       label: "Active Services",
-      value: "3",
+      value: bookings.filter((b) => b.status === "accepted").length.toString(),
       icon: TrendingUp,
       color: "text-green-500",
       bg: "bg-green-500/10",
     },
     {
       label: "Completed",
-      value: "8",
+      value: bookings.filter((b) => b.status === "completed").length.toString(),
       icon: Home,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
     {
-      label: "Saved Providers",
-      value: "5",
+      label: "Pending",
+      value: bookings.filter((b) => b.status === "pending").length.toString(),
       icon: Search,
       color: "text-orange-500",
       bg: "bg-orange-500/10",

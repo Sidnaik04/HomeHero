@@ -13,6 +13,7 @@ import {
 import BookingStatusBadge from "../../components/common/BookingStatusBadge";
 import Button from "../../components/common/Button";
 import bookingsService from "../../api/bookingsService";
+import providersService from "../../api/providersService";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
@@ -22,22 +23,60 @@ const ProviderDashboard = () => {
   const [pendingBookings, setPendingBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [allBookings, setAllBookings] = useState([]);
+  const [providerProfile, setProviderProfile] = useState(null);
 
   useEffect(() => {
     fetchPendingBookings();
+    checkProviderProfile();
+    fetchAllBookings();
   }, []);
 
   const fetchPendingBookings = async () => {
     setLoading(true);
     try {
       const data = await bookingsService.getPendingBookings();
-      setPendingBookings(data);
+      setPendingBookings(data || []);
     } catch (error) {
       console.error("Failed to fetch pending bookings:", error);
+      setPendingBookings([]);
     } finally {
       setLoading(false);
     }
   };
+
+  const checkProviderProfile = async () => {
+    try {
+      const profile = await providersService.getMyProfile();
+      setProviderProfile(profile);
+    } catch (error) {
+      console.error("Failed to fetch provider profile:", error);
+      setProviderProfile(null);
+    }
+  };
+
+  const fetchAllBookings = async () => {
+    try {
+      const data = await bookingsService.getMyBookings();
+      setAllBookings(data);
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    } finally {
+      // finished fetching bookings
+    }
+  };
+
+  const completedBookings = allBookings.filter((b) => b.status === "completed");
+  // totalEarnings is available via monthly and completed filters if needed
+  const thisMonth = completedBookings.filter((b) => {
+    const bookingDate = new Date(b.date_time);
+    const now = new Date();
+    return bookingDate.getMonth() === now.getMonth();
+  });
+  const monthlyEarnings = thisMonth.reduce(
+    (sum, b) => sum + (b.estimated_price || 0),
+    0
+  );
 
   const handleAccept = async (bookingId) => {
     setActionLoading(bookingId);
@@ -70,28 +109,28 @@ const ProviderDashboard = () => {
   const stats = [
     {
       label: "Total Bookings",
-      value: "45",
+      value: allBookings.length.toString(),
       icon: Calendar,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
     },
     {
       label: "This Month",
-      value: "₹12,500",
+      value: `₹${monthlyEarnings}`,
       icon: TrendingUp,
       color: "text-green-500",
       bg: "bg-green-500/10",
     },
     {
       label: "Completed Jobs",
-      value: "38",
+      value: completedBookings.length.toString(),
       icon: Briefcase,
       color: "text-purple-500",
       bg: "bg-purple-500/10",
     },
     {
       label: "Rating",
-      value: "4.8",
+      value: providerProfile?.rating?.toFixed(1) || "0.0",
       icon: Star,
       color: "text-yellow-500",
       bg: "bg-yellow-500/10",

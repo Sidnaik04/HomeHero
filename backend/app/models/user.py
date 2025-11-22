@@ -26,5 +26,7 @@ class User(Base):
     pincode = Column(String)
     is_active = Column(Boolean, default=True, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
+    # URL to the user's avatar/profile picture (stored on Cloudinary)
+    avatar_url = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())

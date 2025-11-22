@@ -55,12 +55,14 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     location: Optional[str] = None
     pincode: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 
 class UserResponse(UserBase):
     id: UUID
     is_active: Optional[bool] = None  # ✅ Can be None
     is_verified: Optional[bool] = None  # ✅ Can be None
+    avatar_url: Optional[str] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

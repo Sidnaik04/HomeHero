@@ -18,14 +18,26 @@ import RescheduleBooking from "./pages/customer/RescheduleBooking";
 import SubmitReview from "./pages/customer/SubmitReview";
 import MyReviews from "./pages/customer/MyReviews";
 import CustomerProfile from "./pages/customer/CustomerProfile";
+import Payments from "./pages/customer/Payments";
+import CustomerSettings from "./pages/customer/CustomerSettings";
 
 // Provider Pages
 import ProviderDashboard from "./pages/provider/ProviderDashboard";
 import ProviderBookings from "./pages/provider/ProviderBookings";
 import ProviderProfile from "./pages/provider/ProviderProfile";
+import Earnings from "./pages/provider/Earnings";
+import MyServices from "./pages/provider/MyServices";
+import ProviderReviews from "./pages/provider/ProviderReviews";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminProviders from "./pages/admin/AdminProviders";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminPayments from "./pages/admin/AdminPayments";
+import AdminSettings from "./pages/admin/AdminSettings";
+import SettingsHub from "./pages/SettingsHub";
+import ProviderSettings from "./pages/provider/ProviderSettings";
 
 // Debug
 import ProviderDebug from "./pages/debug/ProviderDebug";
@@ -146,6 +158,30 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsHub />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/provider/settings"
+            element={
+              <ProtectedRoute allowedRoles={["provider"]}>
+                <ProviderSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/payments"
+            element={
+              <ProtectedRoute allowedRoles={["customer"]}>
+                <Payments />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Protected Provider Routes */}
           <Route
@@ -172,6 +208,30 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/provider/earnings"
+            element={
+              <ProtectedRoute allowedRoles={["provider"]}>
+                <Earnings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/provider/services"
+            element={
+              <ProtectedRoute allowedRoles={["provider"]}>
+                <MyServices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/provider/reviews"
+            element={
+              <ProtectedRoute allowedRoles={["provider"]}>
+                <ProviderReviews />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Protected Admin Routes */}
           <Route
@@ -179,6 +239,46 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/providers"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminProviders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/bookings"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminBookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/payments"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminPayments />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/settings"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminSettings />
               </ProtectedRoute>
             }
           />

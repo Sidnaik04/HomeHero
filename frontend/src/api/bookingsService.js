@@ -119,6 +119,17 @@ const bookingsService = {
       throw error.response?.data || error.message;
     }
   },
+  // Complete: Booking completed
+  completeBooking: async (bookingId) => {
+    try {
+      const response = await axiosInstance.post(
+        `/bookings/${bookingId}/complete`
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 export default bookingsService;

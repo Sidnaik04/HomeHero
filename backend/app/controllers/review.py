@@ -60,6 +60,11 @@ class ReviewController:
     def get_provider_reviews(db: Session, provider_id: str) -> List[Review]:
         return db.query(Review).filter(Review.provider_id == provider_id).all()
 
+    # get customer reviews
+    @staticmethod
+    def get_customer_reviews(db: Session, customer_id: str) -> List[Review]:
+        return db.query(Review).filter(Review.customer_id == customer_id).all()
+
     # get review based on id
     def get_review(db: Session, review_id: str) -> Review:
         review = db.query(Review).filter(Review.review_id == review_id).first()

@@ -13,12 +13,13 @@ const SubmitReview = () => {
   const navigate = useNavigate();
   const booking = location.state?.booking;
   const [rating, setRating] = useState(0);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors: _errors },
   } = useForm();
 
   if (!booking) {
@@ -49,11 +50,19 @@ const SubmitReview = () => {
 
     setLoading(true);
     try {
+      // if user selected files, upload them first and obtain URLs
+      let imageUrls = [];
+      if (selectedFiles && selectedFiles.length > 0) {
+        const uploadRes = await reviewService.uploadImages(selectedFiles);
+        // uploadRes expected shape: { urls: [ ... ] }
+        imageUrls = uploadRes.urls || [];
+      }
+
       const reviewData = {
         booking_id: booking.booking_id,
         rating: rating,
         comment: data.comment || "",
-        images: [], // File upload can be added later
+        images: imageUrls,
       };
 
       await reviewService.submitReview(reviewData);
@@ -155,6 +164,22 @@ const SubmitReview = () => {
             <p className="mt-1 text-xs text-dark-muted">
               Share specific details to help other customers make informed
               decisions
+            </p>
+          </div>
+
+          {/* Image upload */}
+          <div>
+            <label className="label">Add Images (optional)</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => setSelectedFiles(Array.from(e.target.files))}
+              className="mt-2"
+            />
+            <p className="mt-1 text-xs text-dark-muted">
+              You can attach up to 5 images. Images will be uploaded and URLs
+              added to your review.
             </p>
           </div>
 
