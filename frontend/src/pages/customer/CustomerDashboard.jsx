@@ -3,6 +3,7 @@ import bookingsService from "../../api/bookingsService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import DashboardLayout from "../../components/layout/DashboardLayout";
+import ChatWidget from "../../components/chat/ChatWidget";
 import {
   Home,
   Search,
@@ -13,6 +14,7 @@ import {
   Hammer,
   Droplet,
   Paintbrush,
+  MessageCircle,
 } from "lucide-react";
 
 const CustomerDashboard = () => {
@@ -21,6 +23,8 @@ const CustomerDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMinimized, setChatMinimized] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -229,6 +233,23 @@ const CustomerDashboard = () => {
           </p>
         </div>
       </div>
+      {/* Floating Chat Button */}
+      <button
+        onClick={() => setChatOpen(true)}
+        className={`fixed bottom-6 right-6 z-40 w-14 h-14 bg-primary-600 hover:bg-primary-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all ${
+          chatOpen ? "scale-0" : "scale-100"
+        }`}
+      >
+        <MessageCircle size={24} />
+      </button>
+
+      {/* Chat Widget */}
+      <ChatWidget
+        isOpen={chatOpen}
+        onClose={() => setChatOpen(false)}
+        isMinimized={chatMinimized}
+        onToggleMinimize={() => setChatMinimized(!chatMinimized)}
+      />
     </DashboardLayout>
   );
 };

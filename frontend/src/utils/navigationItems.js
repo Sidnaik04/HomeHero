@@ -10,6 +10,7 @@ import {
   Settings,
   FileText,
   TrendingUp,
+  MessageSquare,
 } from "lucide-react";
 
 export const getNavigationItems = (userType) => {
@@ -45,6 +46,11 @@ export const getNavigationItems = (userType) => {
           label: "Profile",
           path: "/customer/profile",
           icon: User,
+        },
+        {
+          label: "AI Assistant",
+          path: "/customer/chat",
+          icon: MessageSquare,
         },
       ];
 

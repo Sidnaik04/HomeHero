@@ -42,6 +42,8 @@ class Settings(BaseSettings):
 
     # Monitoring
     SENTRY_DSN: Optional[str] = None
+    
+    GEMINI_API_KEY: str = "api-key-gemini"
 
     class Config:
         env_file = ".env"

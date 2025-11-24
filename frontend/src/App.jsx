@@ -38,6 +38,7 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminSettings from "./pages/admin/AdminSettings";
 import SettingsHub from "./pages/SettingsHub";
 import ProviderSettings from "./pages/provider/ProviderSettings";
+import ChatAssistant from "./pages/customer/ChatAssistant";
 
 // Debug
 import ProviderDebug from "./pages/debug/ProviderDebug";
@@ -155,6 +156,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["customer"]}>
                 <CustomerProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/chat"
+            element={
+              <ProtectedRoute allowedRoles={["customer"]}>
+                <ChatAssistant />
               </ProtectedRoute>
             }
           />
