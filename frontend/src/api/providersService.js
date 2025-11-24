@@ -84,6 +84,34 @@ const providersService = {
       throw error.response?.data || error.message;
     }
   },
+
+  getNearbyProviders: async (lat, lng, radius = 10, filters = {}) => {
+    try {
+      const params = {
+        lat,
+        lng,
+        radius,
+        ...filters,
+      };
+
+      const response = await axiosInstance.get("/providers/nearby", { params });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
+
+  updateProviderCoordinates: async (latitude, longitude) => {
+    try {
+      const response = await axiosInstance.put("/providers/me/coordinates", {
+        latitude,
+        longitude,
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error.message;
+    }
+  },
 };
 
 export default providersService;

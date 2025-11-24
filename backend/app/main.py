@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import sentry_sdk
@@ -53,6 +53,29 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+# dev helper middleware: ensure CORS header and log unhandled exceptions
+@app.middleware("http")
+async def add_cors_and_log(request: Request, call_next):
+    try:
+        response = await call_next(request)
+    except Exception as e:
+        # log and return JSON so the browser can receive details during dev
+        logger.exception("Unhandled exception during request")
+        from fastapi.responses import JSONResponse
+
+        response = JSONResponse(
+            status_code=500,
+            content={"error": "InternalServerError", "message": str(e)},
+        )
+
+    # ensure CORS header exists for local dev
+    if "access-control-allow-origin" not in {k.lower() for k in response.headers}:
+        response.headers["Access-Control-Allow-Origin"] = "*"
+
+    return response
+
 
 # rate limiting
 app.state.limiter = limiter

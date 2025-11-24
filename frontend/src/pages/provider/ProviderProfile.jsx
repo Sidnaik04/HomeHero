@@ -486,6 +486,85 @@ const ProviderProfile = () => {
             )}
           </div>
 
+          {/* Location Coordinates */}
+          <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
+            <h3 className="font-bold mb-2 flex items-center gap-2">
+              <MapPin className="text-blue-500" size={18} />
+              Location on Map
+            </h3>
+            <p className="text-sm text-dark-muted mb-3">
+              Set your precise location to appear in map searches
+            </p>
+
+            {providerProfile?.latitude && providerProfile?.longitude ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-dark-muted">Latitude:</span>
+                  <span className="font-medium">
+                    {providerProfile.latitude.toFixed(6)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-dark-muted">Longitude:</span>
+                  <span className="font-medium">
+                    {providerProfile.longitude.toFixed(6)}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    if (navigator.geolocation) {
+                      navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                          try {
+                            await providersService.updateProviderCoordinates(
+                              position.coords.latitude,
+                              position.coords.longitude
+                            );
+                            toast.success("Location updated!");
+                            fetchProviderProfile();
+                          } catch (error) {
+                            toast.error("Failed to update location");
+                          }
+                        },
+                        () => toast.error("Could not get location")
+                      );
+                    }
+                  }}
+                  className="text-sm text-primary-500 hover:text-primary-400"
+                >
+                 Update Location
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                      async (position) => {
+                        try {
+                          await providersService.updateProviderCoordinates(
+                            position.coords.latitude,
+                            position.coords.longitude
+                          );
+                          toast.success("Location set successfully!");
+                          fetchProviderProfile();
+                        } catch (error) {
+                          toast.error("Failed to set location");
+                        }
+                      },
+                      () => toast.error("Could not get location")
+                    );
+                  } else {
+                    toast.error("Geolocation not supported");
+                  }
+                }}
+                className="btn-primary"
+              >
+                📍 Set My Location
+              </button>
+            )}
+          </div>
+
           {/* Selected Services Display */}
           {selectedServices.length > 0 && (
             <div className="bg-primary-500/5 border border-primary-500/20 rounded-lg p-4">

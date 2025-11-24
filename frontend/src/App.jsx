@@ -20,6 +20,7 @@ import MyReviews from "./pages/customer/MyReviews";
 import CustomerProfile from "./pages/customer/CustomerProfile";
 import Payments from "./pages/customer/Payments";
 import CustomerSettings from "./pages/customer/CustomerSettings";
+import MapSearch from "./pages/customer/MapSearch";
 
 // Provider Pages
 import ProviderDashboard from "./pages/provider/ProviderDashboard";
@@ -164,6 +165,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["customer"]}>
                 <ChatAssistant />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/map"
+            element={
+              <ProtectedRoute allowedRoles={["customer"]}>
+                <MapSearch />
               </ProtectedRoute>
             }
           />

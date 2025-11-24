@@ -33,6 +33,12 @@ class Provider(Base):
     service_radius = Column(Float, default=10.0)  # km
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+
 
     # Relationships
     user = relationship("User", backref="provider_profile")
+    bookings = relationship("Booking", back_populates="provider")
+    reviews = relationship("Review", back_populates="provider")
