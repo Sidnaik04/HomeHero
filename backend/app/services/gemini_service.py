@@ -17,9 +17,8 @@ if not GEMINI_API_KEY:
 
 try:
     genai.configure(api_key=GEMINI_API_KEY)
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-2.5-flash")
 except Exception:
-    # Log full traceback but keep module importable so other features work
     logger.exception("Failed to configure Gemini model. AI features will degrade.")
     model = None
 

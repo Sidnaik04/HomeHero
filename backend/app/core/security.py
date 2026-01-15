@@ -29,7 +29,6 @@ def create_access_token(
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
 # create refresh token
 def create_refresh_token(subject: Union[str, Any]) -> str:
     expire = datetime.now(timezone.utc) + timedelta(
@@ -39,11 +38,9 @@ def create_refresh_token(subject: Union[str, Any]) -> str:
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
 # verify password
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
-
 
 # hash password
 def get_password_hash(password: str) -> str:
